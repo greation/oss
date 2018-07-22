@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/*去除Chrome等浏览器文本框默认发光边框*/
+input:focus, textarea:focus {
+    outline: none;
+}
+/* 禁止链接高亮 */
+a,input{-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
+
+/*截取字符 */
+.text_split{white-space:nowrap; text-overflow:ellipsis;-o-text-overflow:ellipsis;overflow: hidden;display: inline-block;}
+.tr_split,.tr_split_two,.tr_split_one{display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3; overflow:hidden;word-wrap:break-word}
+.tr_split_one{-webkit-line-clamp:1;}
+.tr_split_two{-webkit-line-clamp:2;}
+
+/*重定义字体大小 */
+.s_16rem {font-size: 1.6rem !important;}
+
+/*头像 cont*/
+.user_name strong {
+    display: inline-block;
+    background: #394B59;
+    color: #fff;
+    width: 80px;
+    height: 80px;
+    font-size: 1.6rem;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 80px;
+}
+
+/*padding btn*/
+.padd_30{
+    padding:6px 30px;
+    margin-right: 1.6rem;
+}
+
+/*plus 7 */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .table-responsive {
+        width:280px;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        border: 1px solid #ddd;
+        min-height: .01%;
+        overflow-x: auto;
+    }
+    .input-group .form-control,.form-control{width: auto !important;}
+}

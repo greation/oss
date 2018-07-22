@@ -1,0 +1,110 @@
+@layout("/common/_container.html"){
+<script type="text/javascript">
+//    $(function () {
+//        var assignData, newAssignData = [];
+//        var ajax = new $ax(Feng.ctxPath + "/menu/menuTreeListByRoleId/" + "${roleId}", function (data) {
+//            assignData = data
+//        });
+//        ajax.start();
+////		console.log(assignData);
+//        for (var i in assignData) {
+//            if (assignData[i].checked) {
+//                newAssignData.push(assignData[i])
+//            }
+//        }
+//        console.log(newAssignData);
+//        var h3Start = '<h4 style="color:#333;font-weight:bold;margin-bottom: 5px;">';
+//        var h3End = '</h4>';
+//        var spanStart = '<span class="m-r-sm">';
+//        var spanEnd = '</span>';
+//        $.each(newAssignData, function (key, val) {
+//            if (val.isOpen) {
+//                $('#assign').append(h3Start + val.name + h3End)
+//            } else {
+//
+//                if (val.id == val.pId){
+//                    $('#assign').append(h3Start + val.name + h3End)
+//                } else {
+//                    $('#assign').append(spanStart + val.name + spanEnd)
+//                }
+//            }
+//        });
+//    });
+
+$(function () {
+    initZtree();
+
+    var treeObj = $.fn.zTree.getZTreeObj("zTree");
+    treeObj.expandAll(true);
+
+    var sNodes = treeObj.getSelectedNodes();
+
+    if (sNodes.length > 0) {
+        var isOpen = sNodes[0].open;
+    }
+});
+
+function initZtree() {
+    var setting = {
+        view: {
+            showLine: false,
+            showIcon: false,
+            selectedMulti: false
+        },
+        check: {
+            enable: false,
+            chkboxType: { "Y": "ps", "N": "ps" }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    var ztree = new $ZTree("zTree", "/menu/checkedMenuTreeListByRoleId/"
+        + "${roleId}");
+    ztree.setSettings(setting);
+    ztree.init();
+
+}
+
+</script>
+
+<link href="${ctxPath}/static/css/view_redefine.css?${date(),dateFormat='yyyyMMddHHmmssSSS'}" rel="stylesheet" /><!--重定义 view样式-->
+
+<!-- 配置grid -->
+<div class="row">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="row">
+                <input type="hidden" id="id" value="${role.id}">
+                <table class="table table-bordered">
+                    <tr>
+                        <td width="120">角色名称：</td>
+                        <td class="text-left">${role.name}</td>
+                    </tr>
+                    <tr>
+                        <td>角色状态：</td>
+                        <td class="text-left">
+                            ${role.status == 1?"正常":"冻结"}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>角色描述：</td>
+                        <td class="text-left">${role.tips}</td>
+                    </tr>
+                    <tr>
+                        <td>功能权限：</td>
+                        <td>
+                            <!--<div id="assign"></div>-->
+                            <ul id="zTree" class="ztree ztree-reset"></ul>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+@}

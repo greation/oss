@@ -1,0 +1,64 @@
+@layout("/common/_container.html"){
+<style>
+	#yqid{
+		border:none !important;}
+</style>
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="userInfoForm">
+			
+			<input type="hidden" id="id" value="${user.id}">
+			<input type="hidden" id="sexValue" value="${user.sex}">
+			<input type="hidden" id="hiddenStatus" value="${statusName}">
+			<input type="hidden" id="editeManager" value="${manager}">
+			<input type="hidden" id="roleIds" value="${user.roleid}">
+			<input type="hidden" id="accoutHidden" value="${user.account}">
+			<div class="row">
+				<div class="col-sm-6 b-r">
+					<#input id="yqid" name="员工编号"  underline="true" value="${employeeNumber}"  readonly="readonly"/>
+					<#input id="name" name="员工姓名" underline="true" value="${user.name}"/>
+					<#input id="jobs" name="岗位名称" underline="true" value="${user.jobs}"/>
+					<#select id="manager" name="是否此部门主管"  value="${manager}" underline="true">
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</#select>
+					<#input id="roleid" name="所属角色"  value="${roleName}"   icon="fa-user-secret" clickFun="UserInfoDlg.showRoleSelectTree()" space="true" readonly="readonly"/>
+				</div>
+				<div class="col-sm-6">
+					<div id="driverInfoContent">
+
+						<#input id="accoutNum" name="登录账号"   underline="true" value="${user.account}"  readonly="readonly"/>
+						<#input id="citySel" name="所属部门" underline="true" readonly="readonly" hidden="deptid" hiddenValue="${user.deptid}" value="${deptName}"
+								clickFun="UserInfoDlg.showDeptSelectTree(); return false;"
+								style="background-color: #ffffff !important;"/>
+						<#input id="email" name="员工邮箱" type="email" value="${user.email}" underline="true" />
+						<#select id="edite_status" name="员工状态"  value="${statusName}">
+							<option value="1">正常</option>
+							<option value="2">冻结</option>
+						</#select>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- 这是部门选择的下拉框 -->
+			<div id="menuContent" class="menuContent"
+				style="display: none; position: absolute; z-index: 200;">
+				<ul id="treeDemo" class="ztree tree-box" style="width: 249px !important;"></ul>
+			</div>
+			<!-- 这是角色选择的下拉框 -->
+			<div id="menuContentRole" class="menuContent"
+				 style="display: none; position: absolute; z-index: 200;">
+				<ul id="roleTree" class="ztree tree-box" style="width: 249px !important;"></ul>
+			</div>
+
+			<div class="row btn-group-m-t" style="text-align: right">
+					<#button btnCss="danger padd_30" name="取消" id="cancel" icon="fa-eraser" clickFun="UserInfoDlg.close()"/>
+					<#button btnCss="info padd_30" name="提交" id="ensure" icon="fa-check" clickFun="UserInfoDlg.editSubmit()"/>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/system/user/user_info.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

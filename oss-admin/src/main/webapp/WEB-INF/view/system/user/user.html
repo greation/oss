@@ -1,0 +1,99 @@
+@layout("/common/_container.html"){
+<style>
+	.control-label{    position: relative;
+		white-space: nowrap;color: inherit;
+		background: white;
+		border: 1px solid #e7eaec;    border-radius: 4px 0 0 4px;
+		height: 34px;
+		line-height: 34px;
+		width: 30%;margin-right: -16px;
+		font-size:14px;color: inherit;}
+	#deptTree{position: absolute;
+		z-index: 99;
+		background: #fff;
+	left: 95px;
+	width: 200px;
+		top:35px;
+	display: none;}
+</style>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>员工管理</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+							<input type="hidden" id="deptid" value=""/>
+							<input type="hidden" id="roleid" value="">
+							<div class="col-lg-12">
+										<ul id="deptTree" class="ztree"></ul>
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="row">
+											<div class="col-sm-3">
+												<#nameCon id="citySel" value="" name="所属部门"   hidden="deptid" clickFun="MgrUser.showDept()" style="background-color: #ffffff !important;"/>
+
+											</div>
+											<div class="col-sm-3">
+												<#nameCon id="account" name="登录账号" />
+											</div>
+											<div class="col-sm-3">
+												<#nameCon id="roleFamilyName" name="员工姓名" />
+											</div>
+											<div class="col-sm-3">
+												<#button name="查询" icon="fa-search" clickFun="MgrUser.search()"/>
+												<#button name="重置" icon="fa-trash" clickFun="MgrUser.resetSearch()" space="true"/>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-3">
+												<#selectCon id="status" name="状态&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+													<option value="4">全部</option>
+													<option value="2">冻结</option>
+													<option value="1">正常</option>
+												</#selectCon>
+											</div>
+											<div class="col-sm-3">
+												<#nameCon id="roleName" name="角色名&nbsp;&nbsp;&nbsp;&nbsp;" />
+											</div>
+
+										</div>
+
+
+									</div>
+								</div>
+								<div  id="managerTableToolbar" role="group">
+									@if(shiro.hasPermission("/mgr/add")){
+									<#button name="新增" icon="fa-plus" clickFun="MgrUser.openAddMgr()"/>
+									@}
+									@if(shiro.hasPermission("/mgr/edit")){
+
+									@}
+									@if(shiro.hasPermission("/mgr/delete")){
+
+									@}
+									@if(shiro.hasPermission("/mgr/reset")){
+
+									@}
+									@if(shiro.hasPermission("/mgr/freeze")){
+									<#button name="冻结账号" icon="fa-warning" clickFun="MgrUser.freezeAccount()" space="true"/>
+									@}
+									@if(shiro.hasPermission("/mgr/setRole")){
+
+									@}
+									<#button name="调整部门" icon="fa-user-secret" clickFun="MgrUser.deptAssign()" space="true"/>
+								</div>
+								<#table id="managerTable"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/system/user/user.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

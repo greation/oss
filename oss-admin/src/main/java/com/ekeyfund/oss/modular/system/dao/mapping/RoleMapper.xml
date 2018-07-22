@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ekeyfund.oss.modular.system.dao.RoleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.ekeyfund.oss.modular.system.model.Role">
+		<id column="id" property="id" />
+		<result column="num" property="num" />
+		<result column="pid" property="pid" />
+		<result column="name" property="name" />
+		<result column="deptid" property="deptid" />
+		<result column="tips" property="tips" />
+		<result column="version" property="version" />
+		<result column="delflag" property="delflag" />
+		<result column="status" property="status" />
+		<result column="createtime" property="createtime" />
+		<result column="creater" property="creater" />
+		<result column="updatetime" property="updatetime" />
+		<result column="updater" property="updater" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		r.id, r.num, r.pid, r.name, r.deptid, r.tips, r.version, r.delflag, r.status
+	</sql>
+
+	<select id="selectRoles" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+		,CASE WHEN u.id IS NULL THEN 0 ELSE COUNT(r.name) END AS userCount
+		FROM sys_role r LEFT JOIN (select * from sys_user su where su.status != 3) u ON POSITION(CONCAT(',',r.id,',') IN CONCAT(',',u.roleid,',')) > 0
+		WHERE 1=1 AND r.delflag = 0
+		<if test="condition != null">
+			AND r.name like CONCAT('%',#{condition},'%')
+		</if>
+		<if test="status != null">
+			AND r.status = #{status}
+		</if>
+		GROUP BY r.name
+		ORDER BY r.createtime desc;
+	</select>
+
+	<select id="selectRoleByRoleName" resultType="com.ekeyfund.oss.modular.system.model.Role">
+		SELECT *
+		FROM sys_role r
+		WHERE 1=1 AND r.delflag = 0
+		<if test="roleName != null">
+			AND r.name = #{roleName}
+		</if>
+		LIMIT 0,1
+	</select>
+
+	<delete id="deleteRolesById">
+		delete from sys_relation where roleid = #{roleId}
+	</delete>
+
+	<select id="roleTreeList" resultType="com.ekeyfund.oss.core.node.ZTreeNode">
+		select id "id",pId
+		"pId",name as "name",(case when (pId=0 or pId is null) then 'true'
+		else 'false' end) "open" from sys_role
+		where delflag = 0
+	</select>
+
+	<select id="roleTreeListByRoleId" resultType="com.ekeyfund.oss.core.node.ZTreeNode">
+		SELECT
+		r.id "id",
+		pId "pId",
+		NAME AS "name",
+		(
+		CASE
+		WHEN (pId = 0 OR pId IS NULL) THEN
+		'true'
+		ELSE
+		'false'
+		END
+		) "open",
+		(
+		CASE
+		WHEN (r1.ID = 0 OR r1.ID IS NULL) THEN
+		'false'
+		ELSE
+		'true'
+		END
+		) "checked"
+		FROM
+		sys_role r
+		LEFT JOIN (
+		SELECT
+		ID
+		FROM
+		sys_role
+		WHERE delflag = 0
+		AND  ID IN
+
+		<foreach collection="array" index="index" item="i" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+
+		) r1 ON r.ID = r1.ID
+		WHERE r.delflag = 0
+		ORDER BY
+		pId,
+		num ASC
+	</select>
+
+	<select id="selectRoleListByRoleIds" resultType="com.ekeyfund.oss.modular.system.model.Role">
+		SELECT
+		id, status, name, pid, deptid, delflag
+		FROM
+		sys_role
+		WHERE delflag = 0
+		AND  ID IN
+		<foreach collection="array" index="index" item="i" open="(" separator="," close=")">
+			#{i}
+		</foreach>
+	</select>
+</mapper>

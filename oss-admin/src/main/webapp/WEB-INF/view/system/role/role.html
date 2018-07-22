@@ -1,0 +1,44 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>角色管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#nameCon id="roleName" name="角色名" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#selectCon id="status" name="角色状态">
+                                    <option value="0">全部</option>
+                                    <option value="1">正常</option>
+                                    <option value="2">冻结</option>
+                                </#selectCon>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>
+                                    <#button name="查询" icon="fa-search" clickFun="Role.search()"/>
+                                </span>
+                                <span class="m-l-sm">
+                                    <#button name="重置" icon="fa-close" clickFun="Role.clear()"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="roleTableToolbar" role="group">
+                            @if(shiro.hasPermission("/role/add")){
+                                <#button name="新增" icon="fa-plus" clickFun="Role.openAddRole()" />
+                            @}
+                        </div>
+                        <#table id="roleTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/role/role.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

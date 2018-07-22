@@ -1,0 +1,27 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="userInfoForm">
+
+            <input type="hidden" id="userIds" value="${userIds}">
+            <input type="hidden" id="deptid" value="">
+
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <div class="panel-body dept-tree">
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row btn-group-m-t" style="text-align: right">
+                <#button btnCss="danger padd_30" name="取消" id="cancel" icon="fa-eraser" clickFun="UserInfoDlg.close()"/>
+                <#button btnCss="info padd_30" name="提交" id="ensure" icon="fa-check" clickFun="UserInfoDlg.exChange()"/>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/user/user_info.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

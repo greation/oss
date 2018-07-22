@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ekeyfund.oss.modular.system.dao.UserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.ekeyfund.oss.modular.system.model.User">
+		<id column="id" property="id" />
+		<result column="avatar" property="avatar" />
+		<result column="account" property="account" />
+		<result column="password" property="password" />
+		<result column="salt" property="salt" />
+		<result column="name" property="name" />
+		<result column="birthday" property="birthday" />
+		<result column="sex" property="sex" />
+		<result column="email" property="email" />
+		<result column="phone" property="phone" />
+		<result column="roleid" property="roleid" />
+		<result column="deptid" property="deptid" />
+		<result column="status" property="status" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime"/>
+		<result column="version" property="version" />
+		<result column="prefix" property="prefix"/>
+		<result column="jobs" property="jobs" />
+		<result column="manager" property="manager"/>
+	</resultMap>
+
+
+
+	<sql id="Base_Column_List">
+		id, account, name, birthday, sex, email, avatar,
+		phone, roleid,
+		deptid, status,
+		createtime,updatetime, version,prefix,jobs,manager
+	</sql>
+
+	<sql id="Base_Column_List_With_Pwd">
+		id, account, name, birthday,password, sex, email, avatar,
+		phone, roleid,salt,
+		deptid, status,
+		createtime, version
+	</sql>
+
+	<select id="selectUsers" resultType="map" parameterType="com.baomidou.mybatisplus.plugins.Page">
+		select distinct
+		u.id, u.account, u.name, u.birthday, u.sex, u.email, u.avatar,
+		u.phone,
+		u.deptid,u.status,
+		u.createtime,u.updatetime, u.version,u.prefix,u.jobs,u.manager,u.roleid
+		from sys_user  u ,  sys_role   r
+
+		where FIND_IN_SET(CAST(r.id AS CHAR),u.roleid)
+		and u.status != 3
+		<if test="name != null and name != ''">
+			and u.name like CONCAT('%',#{name},'%')
+		</if>
+
+		<if test="account!=null and account !=''">
+
+			and u.account =#{account}
+
+		</if>
+		<if test="deptid != null and deptid != 0">
+			and (u.deptid = #{deptid} or u.deptid in ( select id from sys_dept where pids like CONCAT('%[', #{deptid}, ']%') ))
+		</if>
+
+
+		<if test="roleName!=null and roleName !=''">
+
+			and r.name =#{roleName}
+
+		</if>
+
+
+		<if test="status != null and status !=4">
+			and  u.status = #{status}
+		</if>
+
+		<if test="status != null and status ==4">
+			and(u.status = 1 or u.status= 2)
+		</if>
+
+
+
+		<if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+			and (u.createTime between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59'))
+		</if>
+
+		<choose>
+			<when test="orderByField != null and orderByField !=''">
+				<choose>
+					<when test="isAsc == true">
+						order by ${orderByField} ASC
+					</when>
+					<otherwise>
+						order by ${orderByField} DESC
+					</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				order by createtime DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<update id="setStatus">
+		update sys_user set status = #{status},updatetime=NOW() where id =
+		#{userId}
+	</update>
+
+
+	<update id="setBatchStatus">
+			update sys_user set status = #{status},updatetime=NOW() where id
+			in
+		<foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<update id="changePwd">
+		update sys_user set password = #{pwd},updatetime=NOW() where id =
+		#{userId}
+	</update>
+
+	<update id="setRoles">
+		update sys_user set roleid = #{roleIds},updatetime=NOW() where id =
+		#{userId}
+	</update>
+
+	<update id="changeDept">
+		update sys_user
+		set deptid =${deptId},updatetime=NOW()
+		WHERE id IN
+		<foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+
+
+	<select id="getByAccount" resultType="user">
+		select
+		<include refid="Base_Column_List_With_Pwd" />
+		from sys_user where account = #{account} and status != 3
+	</select>
+
+	<select id="getCountByDeptId" resultType="java.lang.Long">
+		SELECT
+			count(1)
+		FROM
+			sys_user
+		WHERE
+			deptid IN (
+				SELECT
+					id
+				FROM
+					sys_dept
+				WHERE
+					id = ${deptId}
+				OR pids LIKE CONCAT(CONCAT('%[', #{deptId}), ']%')
+			) and `status` in (1,2)
+	</select>
+
+</mapper>

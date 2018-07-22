@@ -1,0 +1,53 @@
+@layout("/common/_container.html"){
+<!-- 配置grid -->
+<div class="row">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="row">
+                <input type="hidden" id="id" value="${role.id}">
+                <#table id="roleTable"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="${ctxPath}/static/css/view_redefine.css?${date(),dateFormat='yyyyMMddHHmmssSSS'}" rel="stylesheet"/><!--重定义 view样式-->
+<script type="text/javascript">
+    $(function () {
+        var Role = {
+            id: "roleTable",	//表格id
+            seItem: null,		//选中的条目
+            table: null,
+            layerIndex: -1
+        };
+        /**
+         * 初始化表格的列
+         */
+        Role.initColumn = function () {
+            var columns = [
+                {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
+                {title: '序号', field: 'index', align: 'center', valign: 'middle', formatter: index, width: 60},
+                {title: '日志名称', field: 'logName', align: 'center', valign: 'middle',  width: '70px'},
+                {title: '操作记录', field: 'message', valign: 'middle', width: 360},
+                {title: '操作时间', field: 'createTime', align: 'center', valign: 'middle', width: 150},
+                {title: '操作人', field: 'userName', align: 'center', valign: 'middle', width: 150,formatter: Role.log}
+            ];
+            return columns;
+        };
+        index = function (value, row, index) {
+            return index + 1
+        };
+        Role.log = function (value, row, index) {
+            row.account =YQ.phoneSeparated(row.account);
+            return [
+                '<span  class="text_split"  style="width: 220px; text-align: left">'+row.account + '（'+ row.userName+ '）' +'</span>'
+            ].join("");
+        };
+        var defaultColunms = Role.initColumn();
+        var table = new BSTable(Role.id, "/role/operationLogs/" + "${roleId}", defaultColunms);
+        table.setPaginationType("client");
+        table.init();
+        Role.table = table;
+    });
+</script>
+@}

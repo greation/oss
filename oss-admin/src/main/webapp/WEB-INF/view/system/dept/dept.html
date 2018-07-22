@@ -1,0 +1,46 @@
+@layout("/common/_container.html"){
+<style>
+    .treegrid-tbody tr td {
+        text-align: center;
+    }
+
+    .treegrid-thead tr th:nth-child(1), .treegrid-thead tr th:nth-child(2), .treegrid-tbody tr td:nth-child(1), .treegrid-tbody tr td:nth-child(2) {
+        display: none;
+    }
+
+    .treegrid-tbody tr td:nth-child(3) {
+        text-align: left !important;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>部门管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#nameCon id="condition" name="部门名称" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="Dept.search()"/>
+                            </div>
+                        </div>
+                        <div id="DeptTableToolbar" role="group">
+                            @if(shiro.hasPermission("/dept/add")){
+                            <#button name="添加" icon="fa-plus" clickFun="Dept.openAddDept()"/>
+                            @}
+
+                        </div>
+                        <#table id="DeptTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/dept/dept.js?${date(),'yyyyMMddHHmmssSSS'}"></script>
+@}

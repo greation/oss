@@ -1,0 +1,245 @@
+@charset "utf-8";
+canvas {
+    z-index: 1;
+    position: absolute;
+}
+
+.login {
+    background: url(../img/bg01.jpg) no-repeat;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-size: 100% 100%;
+}
+
+.tip {
+    position: absolute;
+    right: 2px;
+    padding: 4.5rem 3rem 0 0;
+}
+
+.login-box {
+    width: 420px;
+    background: #fff;
+    display: block;
+    position: absolute;
+    left: 50%;
+    margin-left: -210px;
+    top: 50%;
+    margin-top: -245px;
+    border-radius: 2px;
+}
+
+.login-title {
+    height: 54px;
+    width: 100%;
+    text-align: center;
+    line-height: 54px;
+    border-bottom: 1px solid #e9e9e9;
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+.login-lable {
+    width: 360px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.lable-title {
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    color: #333;
+    width: 360px;
+}
+
+.lable-input {
+    width: 358px;
+    height: 45px;
+    border: 1px solid #e9e9e9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.long-input {
+    height: 45px;
+    width: 348px;
+    outline: none;
+    border: none;
+    padding-left: 10px;
+    color: #333;
+}
+
+.code-input {
+    width: 200px;
+    height: 45px;
+    display: block;
+    float: left;
+    padding-left: 10px;
+    border: none;
+    outline: none
+}
+
+.codeImg {
+    width: 124px;
+    height: 36px;
+    overflow: hidden;
+    display: block;
+    float: right;
+    margin-top: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    z-index: 9;
+    position: relative;
+}
+
+.recode {
+    width: 360px;
+    height: 20px;
+    font-size: 13px;
+    color: #999;
+}
+
+.login-submit {
+    background: #4c88ff !important;
+    width: 360px;
+    height: 46px;
+    border-radius: 4px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.login-submit:hover {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    background: #276DFE;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.red {
+    color: #ff2222
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.copyright {
+    color: #bbb;
+    width: 100%;
+    position: absolute;
+    bottom: -40px;
+    text-align: center;
+    font-size: 13px;
+}
+
+@media screen and (max-width: 420px) {
+    .login-box {
+        width: 84%;
+        background: #fff;
+        display: block;
+        position: absolute;
+        left: 50%;
+        margin-left: -42%;
+        top: 50%;
+        margin-top: -245px;
+        border-radius: 2px;
+    }
+
+    .login-title {
+        height: 54px;
+        width: 100%;
+        text-align: center;
+        line-height: 54px;
+        border-bottom: 1px solid #e9e9e9;
+        font-size: 20px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .login-lable {
+        width: 90%;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .lable-title {
+        height: 20px;
+        line-height: 20px;
+        font-size: 14px;
+        color: #666;
+        width: 100%;
+    }
+
+    .lable-input {
+        width: 96%;
+        height: 45px;
+        border: 1px solid #e9e9e9;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .long-input {
+        height: 45px;
+        width: 90%;
+        outline: none;
+        border: none;
+        padding-left: 10px;
+    }
+
+    .code-input {
+        width: 50%;
+        height: 45px;
+        display: block;
+        float: left;
+        padding-left: 10px;
+        border: none;
+        outline: none
+    }
+
+    .codeImg {
+        width: 40%;
+        height: 36px;
+        overflow: hidden;
+        display: block;
+        float: right;
+        margin-top: 4px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    .recode {
+        width: 96%;
+        height: 20px;
+        font-size: 13px;
+        color: #999;
+    }
+
+    .login-submit {
+        background: #4c88ff !important;
+        width: 100%;
+        height: 46px;
+        border-radius: 4px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 16px;
+    }
+}

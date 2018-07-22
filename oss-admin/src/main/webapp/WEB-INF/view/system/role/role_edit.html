@@ -1,0 +1,55 @@
+@layout("/common/_container.html"){
+
+<link href="${ctxPath}/static/css/view_redefine.css?${date(),dateFormat='yyyyMMddHHmmssSSS'}" rel="stylesheet"/><!--重定义 view样式-->
+<style>
+    .wrapper-content {
+        padding: 0 !important
+    }
+
+    .col-sm-3 {
+        width: auto;
+    }
+
+    .col-sm-9 {
+        width: 30%;
+    }
+    #status,#tips,#name{width: 100% !important;}
+    #tips{
+        height:80px;}
+</style>
+<div class="ibox-content">
+    <div class="form-horizontal" id="roleInfoForm">
+        <input type="hidden" id="id" value="${role.id}">
+        <input type="hidden" id="statusValue" value="${role.status}">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <#input id="name" name="角色名称" value="${role.name}"/>
+
+                <#select id="status" name="角色状态">
+                    <option value="1">正常</option>
+                    <option value="2">冻结</option>
+                </#select>
+            </div>
+            <!--<div class="col-sm-12 m-b-sm">-->
+                <!--<label class="col-sm-3 control-label" style="padding-left:0;">-->
+                    <!--角色状态-->
+                <!--</label>-->
+                <!--<div class="col-sm-9 m-t-xs" id="statusRadio">-->
+                    <!--<label class="m-r-sm"><input type="radio" name="status" id="inlineRadio1" value="1" > 正常</label>-->
+                    <!--<label><input type="radio" name="status" id="inlineRadio2" value="2"> 冻结</label>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="col-sm-12 m-t-sm">
+                <#textarea id="tips" name="角色描述" value="${role.tips}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row btn-group-m-t" style="text-align: right">
+        <#button btnCss="danger padd_30" name="取消" id="cancel" icon="fa-eraser" clickFun="RolInfoDlg.close()"/>
+        <#button btnCss="info padd_30" name="提交" id="ensure" icon="fa-check" clickFun="RolInfoDlg.editSubmit()"/>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/role/role_info.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

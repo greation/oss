@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ekeyfund.oss.modular.system.dao.DeptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ekeyfund.oss.modular.system.model.Dept">
+        <id column="id" property="id"/>
+        <result column="num" property="num"/>
+        <result column="pid" property="pid"/>
+        <result column="pids" property="pids"/>
+        <result column="simplename" property="simplename"/>
+        <result column="fullname" property="fullname"/>
+        <result column="tips" property="tips"/>
+        <result column="version" property="version"/>
+        <result column="createtime" property="createtime"/>
+        <result column="updatetime" property="updatetime"/>
+        <result column="delflag" property="delflag"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id, num, pid, pids, simplename, fullname, tips,
+		version, createtime,updatetime,delflag
+	</sql>
+
+    <select id="tree" resultType="com.ekeyfund.oss.core.node.ZTreeNode">
+		select id,pid as pId,simplename as name,
+		(
+		CASE
+		WHEN (pId = 0 OR pId IS NULL) THEN
+		'true'
+		ELSE
+		'false'
+		END
+		) as isOpen from sys_dept where delflag=0
+	</select>
+
+    <select id="list" resultType="map">
+        select * from sys_dept WHERE 1=1 AND delflag = 0
+        <if test="condition != null and condition != ''">
+             AND simplename like CONCAT('%',#{condition},'%')
+        </if>
+        order by num DESC
+    </select>
+
+    <select id="selectDeptByIds" resultType="com.ekeyfund.oss.modular.system.model.Dept">
+        select
+          <include refid="Base_Column_List"/>
+        from
+          sys_dept
+        where delflag = 0 and
+         id in
+        <foreach item="deptId" index="index" collection="deptIdList" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
+</mapper>

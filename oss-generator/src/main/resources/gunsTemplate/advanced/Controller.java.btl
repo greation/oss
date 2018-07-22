@@ -1,0 +1,204 @@
+package ${controller.packageName};
+
+<% for(import in controller.imports!){ %>
+import ${import};
+<% } %>
+
+/**
+ * ${context.bizChName}控制器
+ *
+ * @author fengshuonan
+ * @Date ${tool.currentTime()}
+ */
+@Controller
+@RequestMapping("/${context.bizEnName}")
+public class ${context.bizEnBigName}Controller extends BaseController {
+
+    private String PREFIX = "/${context.moduleName}/${context.bizEnName}/";
+
+    @Autowired
+    private I${context.entityName}Service ${context.bizEnName}Service;
+    /**
+     * 操作日志service
+     */
+    @Autowired
+    private IOperationLogService operationLogService;
+
+    /**
+     * 跳转到${context.bizChName}首页
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ApiOperation(value = "${context.bizChName}列表页面", notes = "跳转至${context.bizChName}列表页面", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    public String index() {
+        return PREFIX + "${context.bizEnName}.html";
+    }
+
+    /**
+     * 跳转到添加${context.bizChName}
+     */
+    @RequestMapping(value = "/${context.bizEnName}_add", method = RequestMethod.GET)
+    @ApiOperation(value = "${context.bizChName}添加页面", notes = "跳转至${context.bizChName}添加页面", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    public String ${context.bizEnName}Add() {
+        return PREFIX + "${context.bizEnName}_add.html";
+    }
+
+    /**
+     * 跳转到修改${context.bizChName}
+     */
+    @RequestMapping(value = "/${context.bizEnName}_update/{${context.bizEnName}Id}", method = RequestMethod.GET)
+    @ApiOperation(value = "${context.bizChName}修改页面", notes = "跳转至${context.bizChName}修改页面", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "path", name = "${context.bizEnName}Id", value = "${context.bizChName}ID", required = true, dataType = "long")
+    public String ${context.bizEnName}Update(@PathVariable Long ${context.bizEnName}Id, Model model) {
+        ${context.entityName} ${context.bizEnName} = ${context.bizEnName}Service.selectById(${context.bizEnName}Id);
+        model.addAttribute("item",${context.bizEnName});
+        LogObjectHolder.me().set(${context.bizEnName});
+        return PREFIX + "${context.bizEnName}_edit.html";
+    }
+
+    /**
+     * 跳转到${context.bizChName}操作日志
+     */
+    @RequestMapping(value = "/${context.bizEnName}_oplog/{${context.bizEnName}Id}" , method = RequestMethod.GET)
+    @ApiOperation(value = "${context.bizChName}日志页面", notes = "跳转至${context.bizChName}日志页面", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "path", name = "${context.bizEnName}Id", value = "${context.bizChName}ID", required = true, dataType = "long")
+    public String ${context.bizEnName}OpLog(@PathVariable Long ${context.bizEnName}Id, Model model) {
+        if (ToolUtil.isEmpty(${context.bizEnName}Id)) {
+            throw new GunsException(GunsExceptionEnum.REQUEST_NULL);
+        }
+        ${context.entityName} ${context.bizEnName} = ${context.bizEnName}Service.selectById(${context.bizEnName}Id);
+        model.addAttribute(${context.bizEnName});
+        LogObjectHolder.me().set(${context.bizEnName});
+        return PREFIX + "/${context.bizEnName}_oplog.html";
+    }
+
+
+    /**
+     * 获取${context.bizChName}列表
+     */
+    @RequestMapping(value = "/list",method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    @Permission
+    @ApiOperation(value = "${context.bizChName}列表数据", notes = "获取${context.bizChName}列表数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "beginTime", value = "开始时间", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "endTime", value = "结束时间", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "condition", value = "查询条件", dataType = "String")})
+    public Object list(@RequestParam(required = false) String beginTime, @RequestParam(required = false) String endTime, @RequestParam(required = false) String condition) {
+        Page<${context.entityName}> page = new PageFactory<${context.entityName}>().defaultPage();
+        List<Map<String, Object>> result = ${context.bizEnName}Service.getLists(page, beginTime, endTime, condition, page.getOrderByField(), page.isAsc());
+        page.setRecords((List<${context.entityName}>) new ${context.entityName}Wrapper(result).warp());
+        return super.packForBT(page);
+
+        //Map<String,Object> whereMap = new HashMap<>();
+        //whereMap.put("delflag", 0);
+        //return ${context.bizEnName}Service.selectByMap(whereMap);
+    }
+    /**
+     * ${context.bizChName}结果包装器
+     */
+    private class ${context.entityName}Wrapper extends BaseControllerWarpper{
+        public ${context.entityName}Wrapper(Object obj){
+            super(obj);
+        }
+        @Override
+        protected void warpTheMap(Map<String, Object> map) {
+            Object creater = map.get("creater");
+            if(creater == null || !(creater instanceof Integer)){
+                map.put("createrName", "--");
+            }else{
+                map.put("createrName", ConstantFactory.me().getUserNameById((Integer)creater));
+            }
+
+            Object updater = map.get("updater");
+            if(updater == null || !(updater instanceof Integer)){
+                map.put("updaterName", "--");
+            }else{
+                map.put("updaterName", ConstantFactory.me().getUserNameById((Integer)updater));
+            }
+        }
+    }
+
+    /**
+     * 新增${context.bizChName}
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    @BussinessLog(value = "新增${context.bizChName}")
+    @DataLog(value = "新增${context.bizChName}",model = ${context.entityName}.class)
+    @Permission
+    @ApiOperation(value = "新增${context.bizChName}数据", notes = "新增${context.bizChName}数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "body", name = "${context.bizEnName}", value = "${context.bizChName}JSON数据", required = true, dataType = "${context.entityName}")
+    public Object add(@RequestBody ${context.entityName} ${context.bizEnName}) {
+        Date currentDate = new Date();
+        Integer userId = ShiroKit.getUser().getId();
+        ${context.bizEnName}.setCreatetime(currentDate);
+        ${context.bizEnName}.setCreater(userId);
+        ${context.bizEnName}.setUpdatetime(currentDate);
+        ${context.bizEnName}.setUpdater(userId);
+        ${context.bizEnName}Service.insert(${context.bizEnName});
+        //日志需要
+        LogObjectHolder.me().set(${context.bizEnName}.getId());
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除${context.bizChName}
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    @BussinessLog(value = "删除${context.bizChName}")
+    @DataLog(value = "删除${context.bizChName}",keyParam = "${context.bizEnName}Id",model = ${context.entityName}.class)
+    @Permission
+    @ApiOperation(value = "删除${context.bizChName}数据", notes = "删除${context.bizChName}数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "query", name = "${context.bizEnName}Id", value = "${context.bizChName}ID", required = true, dataType = "long")
+    public Object delete(@RequestParam Long ${context.bizEnName}Id) {
+        ${context.bizEnName}Service.deleteById(${context.bizEnName}Id);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改${context.bizChName}
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ResponseBody
+    @BussinessLog(value = "修改${context.bizChName}")
+    @DataLog(value = "修改${context.bizChName}",model = ${context.entityName}.class)
+    @Permission
+    @ApiOperation(value = "修改${context.bizChName}数据", notes = "修改${context.bizChName}数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "body", name = "${context.bizEnName}", value = "${context.bizChName}JSON数据", required = true, dataType = "${context.entityName}")
+    public Object update(@RequestBody ${context.entityName} ${context.bizEnName}) {
+        ${context.bizEnName}.setUpdatetime(new Date());
+        ${context.bizEnName}.setUpdater(ShiroKit.getUser().getId());
+        ${context.bizEnName}Service.updateById(${context.bizEnName});
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * ${context.bizChName}详情
+     */
+    @RequestMapping(value = "/detail/{${context.bizEnName}Id}", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    @Permission
+    @ApiOperation(value = "${context.bizChName}详情数据", notes = "获取${context.bizChName}详情数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "path", name = "${context.bizEnName}Id", value = "${context.bizChName}ID", required = true, dataType = "long")
+    public Object detail(@PathVariable("${context.bizEnName}Id") Long ${context.bizEnName}Id) {
+        return ${context.bizEnName}Service.selectById(${context.bizEnName}Id);
+    }
+
+    /**
+     * ${context.bizChName}数据日志
+     */
+    @RequestMapping(value = "/oplog/{${context.bizEnName}Id}", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    @Permission
+    @ApiOperation(value = "${context.bizChName}日志数据", notes = "获取${context.bizChName}日志数据", tags = {"${context.parentMenuName}->${context.bizChName}",})
+    @ApiImplicitParam(paramType = "path", name = "${context.bizEnName}Id", value = "${context.bizChName}ID", required = true, dataType = "long")
+    public Object opLog(@PathVariable Long ${context.bizEnName}Id) {
+        OperationLog operationLog = new OperationLog();
+        operationLog.setLogtype("业务日志");
+        operationLog.setModelclass(${context.entityName}.class.getName());
+        operationLog.setKeyvalue(${context.bizEnName}Id + "");
+        List list = operationLogService.getOperationLogsByCondition(operationLog);
+        return super.warpObject(new OperationLogWrapper(list));
+    }
+}

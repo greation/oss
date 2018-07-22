@@ -1,0 +1,58 @@
+@layout("/common/_container.html"){
+<!-- 配置grid -->
+<div class="row">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="row">
+                <#table id="${context.bizEnName}Table"/>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="\${ctxPath}/static/css/view_redefine.css?\${date(),dateFormat='yyyyMMddHHmmssSSS'}" rel="stylesheet"/><!--重定义 view样式-->
+
+<script type="text/javascript">
+    $(function () {
+        var Log = {
+            id: "${context.bizEnName}Table",	//表格id
+            seItem: null,		//选中的条目
+            table: null,
+            layerIndex: -1
+        };
+        /**
+         * 初始化表格的列
+         */
+        Log.initColumn = function () {
+            var columns = [
+                {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
+                {title: '序号', field: 'index', align: 'center', valign: 'middle', formatter: index, width: '70px'},
+                {title: '日志名称', field: 'logName', align: 'center', valign: 'middle',  width: '70px'},
+                {title: '操作记录', field: 'message', align: 'center', valign: 'middle',width:'220px',formatter:Log.message},
+                {title: '操作时间', field: 'createTime', align: 'center', valign: 'middle', width: '150px'},
+                {title: '操作人', field:'userName', align: 'center', valign: 'middle', width: '150px',formatter: Log.user}
+            ];
+            return columns;
+        };
+
+        Log.message = function (value, row, index) {
+            return [
+                '<a href="javascript:void(0)" title='+ row.message +'><span  class="text_split"  style="width: 220px; text-align: left">'+ row.message +'</span></a>'
+            ].join("");
+        };
+        Log.user = function (value, row, index) {
+            row.account =YQ.phoneSeparated(row.account);
+            return [
+                '<span  class="text_split"  style="width: 220px; text-align: left">'+row.account + '（'+ row.userName+ '）' +'</span>'
+            ].join("");
+        };
+        index = function (value, row, index) {
+            return index + 1
+        }
+        var defaultColunms = Log.initColumn();
+        var table = new BSTable(Log.id, "/${context.bizEnName}/oplog/" + "\${${context.bizEnName}Id}", defaultColunms);
+        table.setPaginationType("client");
+        table.init();
+        Log.table = table;
+    });
+</script>
+@}

@@ -1,0 +1,184 @@
+/**
+ * ${context.bizChName}管理初始化
+ */
+var ${context.bizEnBigName} = {
+    id: "${context.bizEnBigName}Table",	//表格id
+    seItem: null,		//选中的条目
+    table: null,
+    layerIndex: -1,
+    permissions:null  //权限标识，默认均无权限，会在首页html中赋值
+};
+
+/**
+ * 判断是否有权限
+ * @param permission YQ中定义的常量，或者自定义的常量key，描述是否有对应权限
+ * @returns {boolean}
+ */
+${context.bizEnBigName}.hasPermission = function(permission){
+    return ${context.bizEnBigName}.permissions.get(permission);
+}
+
+/**
+ * 初始化表格的列
+ */
+${context.bizEnBigName}.initColumn = function () {
+    var columns = [
+        {field: 'selectItem', radio: true},
+        <% for(item in table.listFields!){ %>
+        <% if(itemLP.last != true){ %>
+            {title: '${item.comment}', field: '${item.propertyName}', visible: true, sortable:${item.sortable},align: 'center', valign: 'middle'},
+        <% }else{ %>
+            {title: '${item.comment}', field: '${item.propertyName}', visible: true, sortable:${item.sortable},align: 'center', valign: 'middle'}
+        <% }} %>
+        ];
+
+        if(${context.bizEnBigName}.hasPermission("/${context.bizEnName}/delete") || ${context.bizEnBigName}.hasPermission("/${context.bizEnName}/update")){
+            columns.push({title: '操作', field: 'Button', visible: true, align: 'center', valign: 'middle', formatter:${context.bizEnBigName}.addFunctionAlty});
+        }
+        if(${context.bizEnBigName}.hasPermission("/${context.bizEnName}/oplog")){
+            columns.push({title: '操作日志', field: 'Button11', visible: false, align: 'center', valign: 'middle', formatter: ${context.bizEnBigName}.viewFunction});
+        }
+        return columns;
+};
+
+${context.bizEnBigName}.addFunctionAlty = function (value,row,index) {
+    var value = '';
+    if(${context.bizEnBigName}.hasPermission("/${context.bizEnName}/update")){
+        value+='<button id="TableEditor" type="button" class="btn btn-link btn-xs text-success" onclick="${context.bizEnBigName}.openEdit${context.bizEnBigName}(\''+ row.id +'\')">编辑</button>';
+    }
+    if(${context.bizEnBigName}.hasPermission("/${context.bizEnName}/delete")){
+        value+='<button id="TableDelete" type="button" class="btn btn-link btn-xs text-success" onclick="${context.bizEnBigName}.delete(\''+ row.id +'\')">删除</button>';
+    }
+    return value;
+}
+
+${context.bizEnBigName}.viewFunction = function (value, row, index) {
+    var value = '';
+    if(${context.bizEnBigName}.hasPermission("/${context.bizEnName}/oplog")){
+        value+='<button id="TableOplog" type="button" class="btn btn-link btn-xs text-success" onclick="${context.bizEnBigName}.viewOpLog(\''+ row.id +'\')">查看</button>';
+    }
+    return value;
+}
+
+/**
+ * 显示${context.bizChName}操作日志
+ */
+${context.bizEnBigName}.viewOpLog = function (id) {
+    var url = Feng.ctxPath + '/${context.bizEnName}/${context.bizEnName}_oplog/' + ((id==null)?${context.bizEnBigName}.seItem.id:id);
+        var index = layer.open({
+            type: 2,
+            title: '操作日志',
+            area: ['900px', '450px'], //宽高
+            //fix: false, //不固定
+            maxmin: true,
+            content: url
+            ,btn: ['关闭']
+            ,btnAlign: 'c'
+            ,cancel: function(index, layero){
+            }
+        });
+        layer.full(index);
+        this.layerIndex = index;
+};
+
+/**
+ * 检查${context.bizChName}是否选中
+ */
+${context.bizEnBigName}.check = function () {
+    var selected = $('#' + this.id).bootstrapTable('getSelections');
+    if(selected.length == 0){
+        Feng.info("请先选中表格中的某一记录！");
+        return false;
+    }else{
+        ${context.bizEnBigName}.seItem = selected[0];
+        return true;
+    }
+};
+
+/**
+ * 点击添加${context.bizChName}
+ */
+${context.bizEnBigName}.openAdd${context.bizEnBigName} = function () {
+    var index = layer.open({
+        type: 2,
+        title: '添加${context.bizChName}',
+        area: ['800px', '420px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/${context.bizEnName}/${context.bizEnName}_add'
+    });
+    this.layerIndex = index;
+};
+
+/**
+ * 点击编辑${context.bizChName}
+ */
+${context.bizEnBigName}.openEdit${context.bizEnBigName} = function (id) {
+    if (id!=null||this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '${context.bizChName}详情',
+            area: ['800px', '420px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/${context.bizEnName}/${context.bizEnName}_update/' + ((id==null)?${context.bizEnBigName}.seItem.id:id)
+        });
+        this.layerIndex = index;
+    }
+};
+
+/**
+ * 点击删除${context.bizChName}
+ */
+
+${context.bizEnBigName}.delete = function (id) {
+
+    if (id!=null||this.check()) {
+        var operation = function(){
+            var ajax = new $ax(Feng.ctxPath + "/${context.bizEnName}/delete", function (data) {
+                Feng.success("删除成功!");
+                ${context.bizEnBigName}.table.refresh();
+            }, function (data) {
+                Feng.error("删除失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set("${context.bizEnName}Id",((id==null)?${context.bizEnBigName}.seItem.id:id));
+            ajax.start();
+        };
+            Feng.confirm("是否刪除${context.bizChName}?", operation);
+        }
+}
+
+
+
+/**
+ * 查询${context.bizChName}列表
+ */
+${context.bizEnBigName}.search = function () {
+    var queryData = {};
+    queryData['condition'] = $("#condition").val();
+    queryData['beginTime'] = $("#beginTime").val();
+    queryData['endTime'] = $("#endTime").val();
+    ${context.bizEnBigName}.table.refresh({query: queryData});
+};
+
+
+/**
+ * 初始化，必须在html中待权限设置后调用初始化
+ */
+$(function () {
+    var ajax = new $ax(Feng.ctxPath + "/permissions/${context.bizEnName}", function (data) {
+        ${context.bizEnBigName}.permissions = new Map();
+        for(var p in data){//遍历json对象的每个key/value对,p为key
+            //alert(p+' '+typeof(data[p])+' '+data[p]);
+            ${context.bizEnBigName}.permissions.set(p,(data[p]));
+        }
+        var defaultColunms = ${context.bizEnBigName}.initColumn();
+        var table = new BSTable(${context.bizEnBigName}.id, "/${context.bizEnName}/list", defaultColunms);
+        table.setPaginationType("server");
+        ${context.bizEnBigName}.table = table.init();
+    }, function (data) {
+        Feng.error("加载权限失败!");
+    });
+    ajax.start();
+});
+

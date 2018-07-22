@@ -1,0 +1,37 @@
+@layout("/common/_container.html"){
+<style>
+    #simplename,#pName,#num{width: 100% !important;}
+</style>
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="deptInfoForm">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <#input id="simplename" name="部门名称" underline="true"/>
+                    <#input id="pName" name="上级部门" readonly="readonly" hidden="pid"
+                            hiddenValue="${pid}" value="${pName}"
+                            clickFun="DeptInfoDlg.showDeptSelectTree(); return false;"
+                            style="background-color: #ffffff !important;" underline="true"/>
+                    <#input id="num" name="展示顺序" value="0"/>
+                </div>
+            </div>
+
+            <!-- 父级部门的选择框 -->
+            <div id="parentDeptMenu" class="menuContent"
+                 style="display: none; position: absolute; z-index: 200;">
+                <ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 245px !important;"></ul>
+            </div>
+            <div class="row btn-group-m-t"  style="text-align: right;">
+                    <#button btnCss="danger padd_30" name="取消" id="cancel" icon="fa-eraser" clickFun="DeptInfoDlg.close()"/>
+                    <#button btnCss="info padd_30" name="提交" id="ensure" icon="fa-check" clickFun="DeptInfoDlg.addSubmit()"/>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/dept/dept_info.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}

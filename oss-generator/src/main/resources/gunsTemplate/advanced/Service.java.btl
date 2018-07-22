@@ -1,0 +1,15 @@
+package ${service.servicePackageName};
+
+<% for(import in service.serviceInterfaceImports!){ %>
+import ${import};
+<% } %>
+
+/**
+ * ${context.bizChName}服务类
+ *
+ * @author fengshuonan
+ * @Date ${tool.currentTime()}
+ */
+public interface I${context.bizEnBigName}Service extends IBasePageService<${context.bizEnBigName}> {
+
+}

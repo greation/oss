@@ -1,0 +1,17 @@
+package ${service.serviceImplPackageName};
+
+<% for(import in service.serviceImplImports!){ %>
+import ${import};
+<% } %>
+
+/**
+ * ${context.bizChName}服务实现类
+ *
+ * @author fengshuonan
+ * @Date ${tool.currentTime()}
+ */
+@Service
+@DataSource(DatasourceEnum.${service.dateSource})
+public class ${context.bizEnBigName}ServiceImpl extends BasePageServiceImpl<${context.bizEnBigName}Mapper, ${context.bizEnBigName}> implements I${context.bizEnBigName}Service {
+
+}

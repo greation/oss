@@ -1,0 +1,56 @@
+@layout("/common/_container.html"){
+<style>
+    input{border: none !important;}
+</style>
+<div class="col-sm-12 ">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" style="border:none !important; ">
+                            <div class="form-horizontal" id="userInfoForm">
+
+
+                                <input type="hidden" id="id" value="${user.id}">
+                                <input type="hidden" id="sexValue" value="${user.sex}">
+                                <input type="hidden" id="accoutHidden" value="${user.account}">
+
+                                <div class="row">
+                                    <div class="col-sm-6 b-r">
+                                        <#input id = ""  name="员工编号" underline ="true" value ="${employeeNumber}"  disabled="disabled "/>
+                                        <#input id="name" name="员工姓名" underline="true" value="${user.name}"  disabled ="disabled"/>
+                                        <#input id="jobs" name="岗位名称" underline="true" disabled ="disabled" value="${user.jobs}"/>
+                                        <#input id = "manager" name = "是否此部门主管 " underline="true" value="${manager}" disabled="disabled " />
+                                        <#input id="roleid" name="所属角色" underline="true" value="${roleName}" disabled="disabled" />
+                                        @if(isNotEmpty(lastLoginTime)){
+                                        <#input id="loginTime" name="最后登录时间" value="${lastLoginTime}"  disabled="disabled "/>
+                                        @}
+
+
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <#input id = "accoutNum"  name="登录账号" underline ="true" value =""  disabled ="disabled" />
+                                        <#input id="citySel" name="所属部门" underline="true"
+                                                value="${deptName}"
+                                                hidden="deptid" hiddenValue="${user.deptid}" disabled ="disabled"/>
+
+                                        <#input id="email" name="邮箱" type="email" value="${user.email}" underline="true"  disabled ="disabled"/>
+                                        <#input id="phone" name="状态" value="${statusName}" underline="true"  disabled ="disabled"/>
+
+                                        @if(isNotEmpty(lastLoginIp)){
+                                            <#input id="loginIp" name="最后登录IP" value="${lastLoginIp}" disabled="disabled "/>
+                                        @}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/user/user_info.js?${date(),dateFormat='yyyyMMddHHmmssSSS'}"></script>
+@}
